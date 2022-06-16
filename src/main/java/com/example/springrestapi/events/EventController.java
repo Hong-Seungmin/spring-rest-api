@@ -2,12 +2,17 @@ package com.example.springrestapi.events;
 
 import com.example.springrestapi.common.ErrorsResource;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +34,14 @@ public class EventController {
         this.eventRepository = eventRepository;
         this.modelMapper = modelMapper;
         this.eventValidator = eventValidator;
+    }
+
+    @GetMapping
+    public ResponseEntity queryEvent(Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<Event> page = eventRepository.findAll(pageable);
+        PagedModel pagedModel = assembler.toModel(page, e -> new EventResource((Event) e));
+        pagedModel.add(Link.of("/docs/index.html#resources-events-list").withRel("profile"));
+        return ResponseEntity.ok(pagedModel);
     }
 
     @PostMapping
