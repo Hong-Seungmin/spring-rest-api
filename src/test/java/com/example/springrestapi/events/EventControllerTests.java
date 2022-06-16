@@ -5,6 +5,7 @@ import com.example.springrestapi.common.TestDesctiption;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -48,6 +49,9 @@ public class EventControllerTests {
 
     @Autowired
     EventRepository eventRepository;
+
+    @Autowired
+    ModelMapper modelMapper;
 
     @Test
     @TestDesctiption("정상적으로 이벤트를 생성하는 메소드")
@@ -290,12 +294,23 @@ public class EventControllerTests {
 
     }
 
-    private void generateEvent(int i) {
+    private Event generateEvent(int i) {
         Event event = Event.builder()
-                           .name("event " + i)
-                           .description("test event")
+                           .name("Spring")
+                           .description("REST API Development with Spring")
+                           .beginEnrollmentDateTime(LocalDateTime.of(2022, 06, 12, 22, 00))
+                           .closeEnrollmentDateTime(LocalDateTime.of(2022, 06, 13, 22, 00))
+                           .beginEventDateTime(LocalDateTime.of(2022, 06, 14, 22, 00))
+                           .endEventDateTime(LocalDateTime.of(2022, 06, 15, 22, 00))
+                           .basePrice(100)
+                           .maxPrice(200)
+                           .limitOfEnrollment(100)
+                           .free(false)
+                           .offline(true)
+                           .eventStatus(EventStatus.DRAFT)
+                           .location("강남역 D2 스타텁 팩토리")
                            .build();
 
-        eventRepository.save(event);
+        return eventRepository.save(event);
     }
 }
