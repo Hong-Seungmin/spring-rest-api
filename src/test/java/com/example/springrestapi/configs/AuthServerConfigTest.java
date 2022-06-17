@@ -3,6 +3,7 @@ package com.example.springrestapi.configs;
 import com.example.springrestapi.accounts.Account;
 import com.example.springrestapi.accounts.AccountRole;
 import com.example.springrestapi.accounts.AccountService;
+import com.example.springrestapi.common.AppProperties;
 import com.example.springrestapi.common.BaseControllerTest;
 import com.example.springrestapi.common.TestDesctiption;
 import org.junit.Test;
@@ -22,6 +23,9 @@ public class AuthServerConfigTest extends BaseControllerTest {
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    AppProperties appProperties;
+
     @Test
     @TestDesctiption("인증 토큰을 발급 받는 테스트")
     public void getAuthToken() throws Exception {
@@ -35,8 +39,8 @@ public class AuthServerConfigTest extends BaseControllerTest {
 
         accountService.saveAccount(account);
 
-        String clientId = "myApp";
-        String clientSecret = "pass";
+        String clientId = appProperties.getClientId();
+        String clientSecret = appProperties.getClientSecret();
 
         mockMvc.perform(post("/oauth/token")
                                 .with(httpBasic(clientId, clientSecret))
